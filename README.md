@@ -1,44 +1,18 @@
 # nl.onvergetelijk.logger
 
-![Screenshot](/images/screenshot.png)
+## Omschrijving
+Uitgebreide logging van acties binnen het systeem.
 
-(*FIXME: In one or two paragraphs, describe what the extension does and why one would download it. *)
+## Specificaties
+* **Versie:** 2.0.0
+* **Status:** Stable
+* **CiviCRM compatibiliteit:** 6.11
+* **Maintainer:** Richard van Oosterhout
 
-The extension is licensed under [AGPL-3.0](LICENSE.txt).
+## Installatie
+1. Download de extensie.
+2. Plaats de map in de CiviCRM extensie directory.
+3. Activeer de extensie via de CiviCRM beheersinterface.
 
-## Requirements
-
-* PHP v7.2+
-* CiviCRM (*FIXME: Version number*)
-
-## Installation (Web UI)
-
-Learn more about installing CiviCRM extensions in the [CiviCRM Sysadmin Guide](https://docs.civicrm.org/sysadmin/en/latest/customize/extensions/).
-
-## Installation (CLI, Zip)
-
-Sysadmins and developers may download the `.zip` file for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-cd <extension-dir>
-cv dl nl.onvergetelijk.logger@https://github.com/FIXME/nl.onvergetelijk.logger/archive/master.zip
-```
-
-## Installation (CLI, Git)
-
-Sysadmins and developers may clone the [Git](https://en.wikipedia.org/wiki/Git) repo for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-git clone https://github.com/FIXME/nl.onvergetelijk.logger.git
-cv en logger
-```
-
-## Getting Started
-
-(* FIXME: Where would a new user navigate to get started? What changes would they see? *)
-
-## Known Issues
-
-(* FIXME *)
+---
+*Beheerd door Stichting Onvergetelijke Zomerkampen.*
