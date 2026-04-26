@@ -1,5 +1,16 @@
 <?php
 
+// === FUNCTIE-INDEX ===
+// Bestand: logger.php
+// Functies in dit bestand:
+//   logger_activity_create()
+//   logger_civicrm_postSave_civicrm_system_log()
+//   logger_civicrm_postSave_civirule_civiruleslogger_log()
+//   logger_civicrm_config()                 Implements hook_civicrm_config().
+//   logger_civicrm_install()                Implements hook_civicrm_install().
+//   logger_civicrm_enable()                 Implements hook_civicrm_enable().
+// === EINDE FUNCTIE-INDEX ===
+
 require_once 'logger.civix.php';
 // phpcs:disable
 use CRM_Logger_ExtensionUtil as E;
@@ -36,6 +47,8 @@ function logger_activity_create($logger) {
     wachthond($extdebug,3, "logger_hostname",   $logger->hostname);
     wachthond($extdebug,3, "logger_message",    $logger->message);
     wachthond($extdebug,3, "logger_context",    $logger->context);
+
+    $result_contact = [];
 
     if ($logger_contactid > 0) {
 
