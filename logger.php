@@ -32,7 +32,7 @@ use CRM_Logger_ExtensionUtil as E;
  */
 function logger_activity_create(object $logger): void {
 
-    $extdebug       = 0;
+    $extdebug = 'logger'; // Kanaal voor centrale debug-config; niveau wordt opgezocht in ozk.debug.config.php
     $apidebug       = FALSE;
     $today_datetime = date("Y-m-d H:i:s");
 
@@ -97,7 +97,12 @@ function logger_activity_create(object $logger): void {
         ];
 
         wachthond($extdebug, 7, 'params_contact', $params_contact);
-        $result_contact = civicrm_api4('Contact', 'get', $params_contact);
+        try {
+            $result_contact = civicrm_api4('Contact', 'get', $params_contact);
+        } catch (\Exception $e) {
+            \Civi::log()->error('LOGGER: Contact ophalen mislukt voor CID ' . $logger_contactid . ': ' . $e->getMessage());
+            $result_contact = [];
+        }
         wachthond($extdebug, 9, 'result_contact', $result_contact);
 
         $row = $result_contact[0] ?? [];
@@ -172,6 +177,7 @@ function logger_activity_create(object $logger): void {
             'ACT_ALG.actcontact_eid'    => $actcontact_eid,
             'ACT_ALG.kampnaam'          => $actkampkort_cap,
             'ACT_ALG.kampkort'          => $actkampkort_low,
+            'ACT_ALG.kamprol'           => $actkamprol,
             'ACT_ALG.kampfunctie'       => $actkampfunctie,
             'ACT_ALG.kampstart'         => $acteventstart,
             'ACT_ALG.kampeinde'         => $acteventeinde,
@@ -186,7 +192,7 @@ function logger_activity_create(object $logger): void {
         $result_activity_create = civicrm_api4('Activity', 'create', $params_activity_create);
         wachthond($extdebug, 9, 'result_activity_create', $result_activity_create);
     } catch (\Exception $e) {
-        wachthond(1, 1, "LOGGER ACTIVITY CREATE ERROR: " . $e->getMessage());
+        wachthond($extdebug, 1, "LOGGER ACTIVITY CREATE ERROR: " . $e->getMessage());
     }
 
     wachthond($extdebug, 2, "########################################################################");
@@ -204,7 +210,7 @@ function logger_activity_create(object $logger): void {
  */
 function logger_civicrm_postSave_civicrm_system_log($dao): void {
 
-    $extdebug = 0;
+    $extdebug = 'logger'; // Kanaal voor centrale debug-config; niveau wordt opgezocht in ozk.debug.config.php
 
     wachthond($extdebug, 2, "########################################################################");
     wachthond($extdebug, 1, "### LOGGER - POSTSAVE SYSTEMLOG",                 "[$dao->level]");
@@ -217,7 +223,10 @@ function logger_civicrm_postSave_civicrm_system_log($dao): void {
     wachthond($extdebug, 3, 'logger_level',     $logger->level      ?? NULL);
     wachthond($extdebug, 3, 'logger_id',        $logger->id         ?? NULL);
 
-    if (($logger->level ?? '') === 'error') {
+    // Verwerk alle niveaus die in de prioriteitsmap als Urgent of Normaal zijn gemarkeerd.
+    // 'info' en 'debug' worden bewust genegeerd — die zijn te laag voor een activiteit.
+    $verwerk_levels = ['emergency', 'alert', 'critical', 'error', 'warning', 'notice'];
+    if (in_array($logger->level ?? '', $verwerk_levels)) {
         logger_activity_create($logger);
     }
 }
@@ -232,7 +241,7 @@ function logger_civicrm_postSave_civicrm_system_log($dao): void {
  */
 function logger_civicrm_postSave_civirule_civiruleslogger_log($dao): void {
 
-    $extdebug = 0;
+    $extdebug = 'logger'; // Kanaal voor centrale debug-config; niveau wordt opgezocht in ozk.debug.config.php
 
     wachthond($extdebug, 2, "########################################################################");
     wachthond($extdebug, 1, "### LOGGER - POSTSAVE CIVIRULES",                 "[$dao->level]");
@@ -246,7 +255,10 @@ function logger_civicrm_postSave_civirule_civiruleslogger_log($dao): void {
     wachthond($extdebug, 3, 'logger_id',        $logger->id         ?? NULL);
     wachthond($extdebug, 3, 'logger_ruleid',    $logger->rule_id    ?? NULL);
 
-    if (($logger->level ?? '') === 'error') {
+    // Verwerk alle niveaus die in de prioriteitsmap als Urgent of Normaal zijn gemarkeerd.
+    // 'info' en 'debug' worden bewust genegeerd — die zijn te laag voor een activiteit.
+    $verwerk_levels = ['emergency', 'alert', 'critical', 'error', 'warning', 'notice'];
+    if (in_array($logger->level ?? '', $verwerk_levels)) {
         logger_activity_create($logger);
     }
 
