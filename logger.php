@@ -135,18 +135,20 @@ function logger_activity_create(object $logger): void {
     wachthond($extdebug, 1, "### LOGGER - 3.0 CREATE ERRORLOG ACTIVITY",       "[$logger_level]");
     wachthond($extdebug, 2, "########################################################################");
 
-    // Prioriteit op basis van log-level; onbekende levels krijgen 'Normaal'
+    // Prioriteit op basis van log-level; onbekende levels krijgen 'Normal'.
+    // Gebruik de CiviCRM machine-naam (name), niet het Nederlandse label (label):
+    //   Urgent → name='Urgent', Normal → name='Normal', Low → name='Low'
     $prioriteit_map = [
         'emergency' => 'Urgent',
         'alert'     => 'Urgent',
         'critical'  => 'Urgent',
         'error'     => 'Urgent',
-        'warning'   => 'Normaal',
-        'notice'    => 'Normaal',
-        'info'      => 'Laag',
-        'debug'     => 'Laag',
+        'warning'   => 'Normal',
+        'notice'    => 'Normal',
+        'info'      => 'Low',
+        'debug'     => 'Low',
     ];
-    $actprioriteit = $prioriteit_map[$logger_level] ?? 'Normaal';
+    $actprioriteit = $prioriteit_map[$logger_level] ?? 'Normal';
 
     $params_activity_create = [
         'checkPermissions' => FALSE,
